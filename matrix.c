@@ -13,8 +13,27 @@
 Matrix *create(int rows, int columns)
 {
 	Matrix *result = NULL;
+	char input[100];
+	char *tokens;
 	
-	// TO DO
+	if((rows || columns) == 0) {
+		return NULL;
+	}
+
+	for(int i = 0; i < rows-1; i++) {
+		printf("Enter %d integer values for row %d: ", &columns, &i);
+
+		scanf("%[^\n]", input);
+		*tokens = strtok (input," ");
+
+		while (*tokens != NULL)
+ 		{
+ 			for(int j = 0; j < rows-1; j++) {
+    			setValueAt(&result, i, j, *tokens);
+    			*tokens = strtok (NULL, " ");
+    		}
+  		}
+	}
 
 	return result;
 }
@@ -26,7 +45,12 @@ Matrix *create(int rows, int columns)
  ***************************************************************************/
 int getValueAt(Matrix *m, int row, int column)
 {
-	// TO DO
+	int value = NULL;
+
+	if((row > 0 && row >= *m.rows) && (column > 0 && column >= *m.columns)) {
+		value = *m.data(row,column);
+		return value;
+	}
 	
 	return INT_MIN;
 }
@@ -38,7 +62,9 @@ int getValueAt(Matrix *m, int row, int column)
  ***************************************************************************/
 void setValueAt(Matrix *m, int row, int column, int value)
 {
-	// TO DO
+	if((row > 0 && row >= *m.rows) && (column > 0 && column >= *m.columns)) {
+		*m.data(row,column) = value; 
+	}
 }
 
 /****************************************************************************
@@ -107,10 +133,10 @@ Matrix *scalarMultiply(Matrix *m, int scalar)
 /****************************************************************************
  * If the input matrices are compatible, then multiplies the input matrices	*
  * and returns a pointer to the result matrix. Use create(), getValueAt(), 	*
- * and setValueAt() functions to implement this function.					*														*
+ * and setValueAt() functions to implement this function.					*														
  *																			*
  * If the input matrices are not compatible, return NULL.					*
- * DO NOT modify the input matrices.										*											*
+ * DO NOT modify the input matrices.										*											
  ***************************************************************************/
 Matrix *multiply(Matrix *m1, Matrix *m2)
 {
