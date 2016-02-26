@@ -1,7 +1,9 @@
+#include "matrix.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-#include "matrix.h"
+#include <string.h>
 
 /****************************************************************************
  * Creates and returns a pointer to a matrix object with the specified		*
@@ -12,30 +14,16 @@
  ***************************************************************************/
 Matrix *create(int rows, int columns)
 {
-	Matrix *result = NULL;
-	char input[100];
-	char *tokens;
-	
-	if((rows || columns) == 0) {
+
+  Matrix *matrix = NULL;
+  matrix->rows = rows;
+  matrix->columns = columns;
+
+	if(!(rows && columns) > 0) {
 		return NULL;
 	}
 
-	for(int i = 0; i < rows-1; i++) {
-		printf("Enter %d integer values for row %d: ", &columns, &i);
-
-		scanf("%[^\n]", input);
-		*tokens = strtok (input," ");
-
-		while (*tokens != NULL)
- 		{
- 			for(int j = 0; j < rows-1; j++) {
-    			setValueAt(&result, i, j, *tokens);
-    			*tokens = strtok (NULL, " ");
-    		}
-  		}
-	}
-
-	return result;
+	return matrix;
 }
 
 /****************************************************************************
@@ -45,13 +33,14 @@ Matrix *create(int rows, int columns)
  ***************************************************************************/
 int getValueAt(Matrix *m, int row, int column)
 {
-	int value = NULL;
+	int value = 0;
 
-	if((row > 0 && row >= *m.rows) && (column > 0 && column >= *m.columns)) {
-		value = *m.data(row,column);
+	if((row > 0 && row >= m->rows) && (column > 0 && column >= m->columns)) {
+    int index = (m->columns * column) + row;
+		value = m->data[index];
 		return value;
 	}
-	
+
 	return INT_MIN;
 }
 
@@ -62,8 +51,9 @@ int getValueAt(Matrix *m, int row, int column)
  ***************************************************************************/
 void setValueAt(Matrix *m, int row, int column, int value)
 {
-	if((row > 0 && row >= *m.rows) && (column > 0 && column >= *m.columns)) {
-		*m.data(row,column) = value; 
+  if((row > 0 && row >= m->rows) && (column > 0 && column >= m->columns)) {
+    int index = (m->columns * column) + row;
+		m->data[index] = value;
 	}
 }
 
@@ -77,7 +67,7 @@ void setValueAt(Matrix *m, int row, int column, int value)
 Matrix *add(Matrix *m1, Matrix *m2)
 {
 	Matrix *result = NULL;
-	
+
 	// TO DO
 
 	return result;
@@ -93,7 +83,7 @@ Matrix *add(Matrix *m1, Matrix *m2)
 Matrix *subtract(Matrix *m1, Matrix *m2)
 {
 	Matrix *result = NULL;
-	
+
 	// TO DO
 
 	return result;
@@ -108,7 +98,7 @@ Matrix *subtract(Matrix *m1, Matrix *m2)
 Matrix *transpose(Matrix *m)
 {
 	Matrix *result = NULL;
-	
+
 	// TO DO
 
 	return result;
@@ -124,7 +114,7 @@ Matrix *transpose(Matrix *m)
 Matrix *scalarMultiply(Matrix *m, int scalar)
 {
 	Matrix *result = NULL;
-	
+
 	// TO DO
 
 	return result;
@@ -133,19 +123,16 @@ Matrix *scalarMultiply(Matrix *m, int scalar)
 /****************************************************************************
  * If the input matrices are compatible, then multiplies the input matrices	*
  * and returns a pointer to the result matrix. Use create(), getValueAt(), 	*
- * and setValueAt() functions to implement this function.					*														
+ * and setValueAt() functions to implement this function.					*
  *																			*
  * If the input matrices are not compatible, return NULL.					*
- * DO NOT modify the input matrices.										*											
+ * DO NOT modify the input matrices.										*
  ***************************************************************************/
 Matrix *multiply(Matrix *m1, Matrix *m2)
 {
 	Matrix *result = NULL;
-	
+
 	// TO DO
 
 	return result;
 }
-
-
-
