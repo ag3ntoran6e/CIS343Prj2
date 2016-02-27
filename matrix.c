@@ -6,6 +6,15 @@
 #include <string.h>
 
 /****************************************************************************
+ * Matrix Operations
+ * CIS 343 - Project 2
+ * Professor Nandigam
+ *
+ * Authors: Morrie Cunningham & Devin Brown
+ ***************************************************************************/
+
+
+/****************************************************************************
  * Creates and returns a pointer to a matrix object with the specified		*
  * number of rows and columns. The "data" field is set to a dynamically 	*
  * created array of ints of size rows * columns.							*
@@ -15,13 +24,15 @@
 Matrix *create(int rows, int columns)
 {
 
-  Matrix *matrix = NULL;
-  matrix->rows = rows;
-  matrix->columns = columns;
+ 	Matrix *matrix = malloc(sizeof *matrix);
+  	matrix->rows = rows;
+  	matrix->columns = columns;
 
 	if(!(rows && columns) > 0) {
 		return NULL;
 	}
+
+  matrix->data = (int *) malloc(sizeof(int *) * (columns*rows));
 
 	return matrix;
 }
@@ -33,15 +44,11 @@ Matrix *create(int rows, int columns)
  ***************************************************************************/
 int getValueAt(Matrix *m, int row, int column)
 {
-	int value = 0;
+	if(row < 0 || column < 0 || row > (m->rows-1) || column > (m->columns-1)) {
+    return INT_MIN;
+  }
 
-	if((row > 0 && row >= m->rows) && (column > 0 && column >= m->columns)) {
-    int index = (m->columns * column) + row;
-		value = m->data[index];
-		return value;
-	}
-
-	return INT_MIN;
+  return m->data[(row*(m->columns)) + column];
 }
 
 /****************************************************************************
@@ -51,10 +58,10 @@ int getValueAt(Matrix *m, int row, int column)
  ***************************************************************************/
 void setValueAt(Matrix *m, int row, int column, int value)
 {
-  if((row > 0 && row >= m->rows) && (column > 0 && column >= m->columns)) {
-    int index = (m->columns * column) + row;
-		m->data[index] = value;
-	}
+  if(row < 0 || column < 0 || row > (m->rows-1) || column > (m->columns-1)) {
+    return;
+  }
+  m->data[(row*(m->columns)) + column] = value;
 }
 
 /****************************************************************************
@@ -66,11 +73,19 @@ void setValueAt(Matrix *m, int row, int column, int value)
  ***************************************************************************/
 Matrix *add(Matrix *m1, Matrix *m2)
 {
-	Matrix *result = NULL;
+	if((m1->rows != m2->rows) && (m1->columns != m2->columns)) {
+    return NULL;
+  }
 
-	// TO DO
+  Matrix *m3 = create(m1->rows, m1->columns);
 
-	return result;
+  for(int i = 0; i < m1->rows; i++) {
+    for(int j = 0; j < m1->columns; j++) {
+      setValueAt(m3,i,j,(getValueAt(m1,i,j) + getValueAt(m2,i,j)));
+    }
+  }
+
+	return m3;
 }
 
 /****************************************************************************
@@ -82,11 +97,19 @@ Matrix *add(Matrix *m1, Matrix *m2)
  ***************************************************************************/
 Matrix *subtract(Matrix *m1, Matrix *m2)
 {
-	Matrix *result = NULL;
+  if((m1->rows != m2->rows) && (m1->columns != m2->columns)) {
+    return NULL;
+  }
 
-	// TO DO
+  Matrix *m3 = create(m1->rows, m1->columns);
 
-	return result;
+  for(int i = 0; i < m1->rows; i++) {
+    for(int j = 0; j < m1->columns; j++) {
+      setValueAt(m3,i,j,(getValueAt(m1,i,j) - getValueAt(m2,i,j)));
+    }
+  }
+
+	return m3;
 }
 
 /****************************************************************************
@@ -97,9 +120,17 @@ Matrix *subtract(Matrix *m1, Matrix *m2)
  ***************************************************************************/
 Matrix *transpose(Matrix *m)
 {
-	Matrix *result = NULL;
+  if(m->rows < 0 || m->columns < 0) {
+    return NULL;
+  }
 
-	// TO DO
+  Matrix *result = create(m->columns, m->rows);
+
+  for(int i = 0; i < m->columns; i++) {
+    for(int j = 0; j < m->rows; j++) {
+      setValueAt(result,i,j,getValueAt(m,j,i));
+    }
+  }
 
 	return result;
 }
@@ -113,9 +144,17 @@ Matrix *transpose(Matrix *m)
  ***************************************************************************/
 Matrix *scalarMultiply(Matrix *m, int scalar)
 {
-	Matrix *result = NULL;
+  if(m->rows < 0 || m->columns < 0) {
+    return NULL;
+  }
 
-	// TO DO
+  Matrix *result = create(m->rows, m->columns);
+
+  for(int i = 0; i < m->rows; i++) {
+    for(int j = 0; j < m->columns; j++) {
+      setValueAt(result,i,j,(getValueAt(m,i,j) * scalar));
+    }
+  }
 
 	return result;
 }
@@ -130,9 +169,22 @@ Matrix *scalarMultiply(Matrix *m, int scalar)
  ***************************************************************************/
 Matrix *multiply(Matrix *m1, Matrix *m2)
 {
-	Matrix *result = NULL;
+  if(m1->columns != m2->rows) {
+    return NULL;
+  }
 
-	// TO DO
+  Matrix *m3 = create(m1->rows, m2->columns);
 
-	return result;
+  int result = 0;
+  for(int i = 0; i < m1->rows; i++) {
+    for(int j = 0; j < m2->columns; j++) {
+      for(int k = 0; k < m1->columns; k++) {
+          result = getValueAt(m3,i,j);
+          result += (getValueAt(m1,i,k) * getValueAt(m2,k,j));
+          setValueAt(m3,i,j,result);
+      }
+    }
+  }
+
+	return m3;
 }
